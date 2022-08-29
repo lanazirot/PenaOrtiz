@@ -1,12 +1,13 @@
-//Import fetch
-const fetch = require('node-fetch');
-const url = 'http://dog-api.kinduff.com/api/facts';
+const url = 'https://dog.ceo/api/breeds/image/random';
 
-// Use node.js para ejecutar el codigo
-document.getElementById('obtener').addEventListener('click', fetching);
 const fetching = async () => {
     const res = await fetch(url);
     const data = await res.json();
-    const { facts } = data;
-    document.getElementById('leyenda').innerHTML = facts[0];
+    const { message: source } = data;
+    document.getElementById('imagen').src = source;
+}
+
+window.onload = () => {
+    document.getElementById('obtener').addEventListener('click', fetching);
+    document.getElementById('obtener').click();
 }
