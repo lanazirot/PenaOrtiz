@@ -59,7 +59,8 @@ Dato curioso, existe un código titulado "I'm a teapot", es el 418, y su uso es 
 
 ---
 ### Referencias electrónicas 🌐
-https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods 
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods  
+
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Status 
 
 
