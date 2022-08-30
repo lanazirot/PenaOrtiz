@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Mono&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Red Hat Mono', monospace;
+}
+
+.container {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "section section"
+        "section section"
+        "footer footer";
+    grid-template-rows: 10% repeat(2, 1fr) 5%;
+    grid-template-columns: 50%;
+    gap: 1rem;
+    height: 100vh;
+    padding: 0.5%;
+}
+
+section {
+    background-color: #032859;
+    display: flex;
+}
+
+section img {
+    width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+
+
+header, footer, section {
+    color: white;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    color: white;
+}
+
+header, footer {
+    font-size: 1.9em;
+}
+
+header {
+    grid-area: header;
+    background-color: #011C40;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+header i {
+    margin-right: 1em;
+}
+
+footer {
+    grid-area: footer;
+    background-color: #011126;
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .container {
+        display: grid;
+        grid-template-areas:
+            "header"
+            "section"
+            "section"
+            "section"
+            "section"
+            "footer";
+        grid-template-rows: 10% repeat(4, 20%) 5%;
+        grid-template-columns: 100%;
+        gap: 1rem;
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    section{
+        background-color: transparent;
+    }
+
+    section img {
+        width: 10em;
+        height: 10em;
+        background-size: cover;
+        display: block;
+        border-radius: 125px;
+        box-shadow: 0 8px 6px 2px black;
+    }
+
+    header, footer {
+        font-size: 1.3em;
+    }
+}
