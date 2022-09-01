@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Mono&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Red Hat Mono', monospace;
+}
+
+header, footer, section {
+    color: white;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    color: white;
+}
+
+header, footer {
+    font-size: 1.9em;
+}
+
+header {
+    grid-area: header;
+    background-color: #011C40;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+header i {
+    margin-right: 1em;
+}
+
+footer {
+    grid-area: footer;
+    background-color: #011126;
+}
+
+body, #peticion{
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    margin-top: 10px;
+}
+
