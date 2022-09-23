@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const { printHelloWorld, checkId } = require("./middlewares/index");
 
 const whitelist = ["http://localhost:8081"];
 
@@ -16,8 +17,11 @@ const options = {
 const app = express();
 app.use(express.json());
 app.use(express.text());
-
 app.use(cors(options));
+app.use(printHelloWorld);
+
+// const router = express.Router()
+// app.use(router)
 
 app.use(
   "/",
@@ -26,7 +30,7 @@ app.use(
   })
 );
 
-app.get("/users/:id", (req, res) => {
+app.get("/users/:id", checkId, (req, res) => {
   const { id } = req.params;
   res.status(202).json({ message: "Okay", id });
 });
