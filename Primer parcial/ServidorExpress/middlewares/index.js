@@ -14,6 +14,7 @@ const checkId = (req, res, next) => {
     res
       .status(405)
       .json({ message: "ID should be less than 500", error: "Less500" });
+  else next();
 };
 
 module.exports = { printHelloWorld, checkId };

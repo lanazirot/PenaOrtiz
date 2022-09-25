@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const { printHelloWorld, checkId } = require("./middlewares/index");
+const morgan = require('morgan')
+const path = require('path')
+const fs = require('fs')
 
 const whitelist = ["http://localhost:8081"];
 
@@ -15,13 +18,14 @@ const options = {
 };
 
 const app = express();
+const logStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
+
 app.use(express.json());
 app.use(express.text());
 app.use(cors(options));
-app.use(printHelloWorld);
+// app.use(printHelloWorld); Mi middleware desde 0 para peticiones al API
+app.use(morgan('combined', {stream: logStream}))
 
-// const router = express.Router()
-// app.use(router)
 
 app.use(
   "/",
