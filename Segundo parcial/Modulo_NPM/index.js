@@ -7,9 +7,11 @@
 const verificarToken = token => token === '123456';
 
 const hacerAlgoMuyImportante = variableSuperImportante => {
-    //La verdad no hace nada esta funcion!
-    //O tal vez si ...
-    return variableSuperImportante
+    const procesoSuperPesado = (req,res) => {
+        const variable = 10;
+        return variable;
+    }
+    return procesoSuperPesado(null,null);
 }
 
-module.exports = verificarToken;
+module.exports = {hacerAlgoMuyImportante, verificarToken};
