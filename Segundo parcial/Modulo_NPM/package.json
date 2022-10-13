@@ -1,0 +1,15 @@
+{
+  "name": "modulo_npm",
+  "version": "1.0.0",
+  "description": "Modulo que verifica un token",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "token",
+    "auth"
+  ],
+  "author": "Alan Pena Ortiz",
+  "license": "ISC"
+}
