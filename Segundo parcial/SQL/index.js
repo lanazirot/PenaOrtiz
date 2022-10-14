@@ -1,21 +1,20 @@
+require('dotenv').config();
+
 const sql = require("mssql");
 const express = require("express");
-const { getAllCustomers, findById } = require("./routes/customersRoute.js");
+const cors = require("cors")
+const routerApi = require('./routes/index.js');
 const appPool = new sql.ConnectionPool(process.env.CONNECTION);
 
 const app = express();
-
-const router = express.Router();
-router.get("/customers", getAllCustomers);
-router.get("/customers/:id", findById)
-
+const port = process.env.PORT || 3000;
 
 appPool
   .connect()
   .then((pool) => {
+    routerApi(app)
     app.locals.db = pool;
-    app.use(router);
     app.use(cors({ origin: "*" }));
-    app.listen(process.env.PORT);
+    app.listen(port);
   })
   .catch(console.error);
