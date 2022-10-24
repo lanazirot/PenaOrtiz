@@ -41,4 +41,11 @@ customersRouter.post("/", (req, res, next) => {
   
 });
 
+customersRouter.delete("/:id", (req,res,next) => {
+  const { id } = req.params;
+  if( !id ){
+    
+  }
+});
+
 module.exports = customersRouter;
