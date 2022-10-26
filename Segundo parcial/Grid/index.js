@@ -12,6 +12,8 @@ new gridjs.Grid({
       ]),
   },
   search: true,
+  resizable:true,
+  pagination: true,
   language: {
     'search': {
       'placeholder': '🔍 Buscar...'
@@ -23,5 +25,10 @@ new gridjs.Grid({
       'results': () => 'Resultados'
     }
   },
-  sort: true
+  sort: true,
+  style: { 
+    table: { 
+      'white-space': 'nowrap'
+    }
+  },
 }).render(document.getElementById("wrapper"));
