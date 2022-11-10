@@ -1,0 +1,8 @@
+hola: esta es una prueba
+de: como es la estructura YAML
+arreglo: 
+  - hola
+  - 123
+  - objeto
+  - wow: 140701
+prueba: [1,3,4]
