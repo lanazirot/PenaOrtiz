@@ -1,5 +1,9 @@
 const express = require("express");
 const customersRouter = express.Router();
+const { PrismaClient } = require("@prisma/client");
+
+const prisma = new PrismaClient();
+
 const {
   validatePatchCustomer,
   validatePostCustomer,
@@ -35,7 +39,6 @@ const {
  *          numeroMembresia: 10183820s
  */
 
-
 /**
  * @swagger
  * /api/clientes/:
@@ -51,22 +54,16 @@ const {
  *       500:
  *         description: Error del servidor
  */
-customersRouter.get("/", (req, res, next) => {
-  const { top = 100, orderBy = "id" } = req.query;
-  req.app.locals.db.query(
-    `SELECT TOP ${top} * FROM Clientes ORDER BY ${orderBy}`,
-    (err, query) => {
-      if (err) {
-        res
-          .status(500)
-          .json({ message: "Unexpected error on server side", data: err });
-      } else {
-        res
-          .status(200)
-          .json({ message: "Data has been found", data: query.recordset });
-      }
-    }
-  );
+customersRouter.get("/", async (req, res, next) => {
+  const posts = await prisma.clientes.findMany();
+  if (posts) {
+    res.status(200).json({ message: "Data has been found", data: posts });
+  } else {
+    res.status(500).json({
+      message: "Unexpected error on server side",
+      data: "Posts not found",
+    });
+  }
 });
 /**
  * @swagger
@@ -208,28 +205,29 @@ customersRouter.patch("/:id", validatePatchCustomer, (req, res, next) => {
  *       200:
  *         description: Retorna la informacion del cliente eliminado
  *       500:
- *         description: Error del servidor  
+ *         description: Error del servidor
  */
-customersRouter.delete("/:id", (req, res, next) => {
+customersRouter.delete("/:id", async (req, res, next) => {
   const { id } = req.params;
-  const { db } = req.app.locals;
   if (!id) {
     res.status(400).json({
       message: "Client ID is required when trying to delete a customer",
       data: null,
     });
   } else {
-    db.query(`DELETE TOP (1) FROM Clientes WHERE id = ${id}`, (err, query) => {
-      if (err) {
-        res
-          .status(500)
-          .json({ message: "Unexpected error on server side", data: err });
-      } else {
-        res
-          .status(200)
-          .json({ message: "Customer has been deleted.", data: query });
-      }
-    });
+    try {
+      const user = await prisma.clientes.delete({
+        where: {
+          id: parseInt(id),
+        },
+      });
+      res.status(200).json({ message: "Client has been deleted", data: user });
+    } catch (error) {
+      res.status(500).json({
+        message: "Unexpected error on server side",
+        data: error,
+      });
+    }
   }
 });
 
