@@ -4,10 +4,46 @@ const {
   validatePatchCustomer,
   validatePostCustomer,
 } = require("../middlewares/customer/index.js");
+
 /**
  * @swagger
- * /:
+ * components:
+ *   schemas:
+ *     Customer:
+ *       type: object
+ *       properties:
+ *         nombre:
+ *           type: String
+ *           description: Nombre del usuario
+ *         apellidos:
+ *           type: string
+ *           description: Apellidos del usuario
+ *         direccion:
+ *           type: String
+ *         numeroMembresia:
+ *           type: String
+ *           description: Numero de membresia del usuario generado en la tienda
+ *       required:
+ *          - nombre
+ *          - apellidos
+ *          - direccion
+ *          - numeroMembresia
+ *       example:
+ *          nombre: Alan
+ *          apellidos: Peña Ortiz
+ *          direccion: Juarez 1234
+ *          numeroMembresia: 10183820s
+ */
+
+
+/**
+ * @swagger
+ * /api/clientes/:
  *   get:
+ *     summary: Listar clientes
+ *     operationId: getClientes
+ *     tags:
+ *        - Clientes
  *     description: Obtener todos los clientes
  *     responses:
  *       200:
@@ -34,14 +70,25 @@ customersRouter.get("/", (req, res, next) => {
 });
 /**
  * @swagger
- * /id:
+ * /api/clientes/{id}:
  *   get:
- *     description: Obtiene la informacion de un cliente por su ID
+ *     summary: Obtener info del cliente por ID
+ *     operationID: getClienteById
+ *     tags:
+ *        - Clientes
+ *     description: Obtener la informacion de un cliente
  *     responses:
  *       200:
- *         description: Retorna un objeto tipo cliente y sus propiedades
+ *         description: Retorna la informacion de un cliente en formato JSON
  *       500:
  *         description: Error del servidor
+ *   parameters:
+ *      - name: id
+ *        in: path
+ *        required: true
+ *        description: ID del cliente
+ *        schema:
+ *          type: string
  */
 customersRouter.get("/:id", (req, res, next) => {
   const { id } = req.params;
@@ -60,7 +107,28 @@ customersRouter.get("/:id", (req, res, next) => {
     }
   );
 });
-
+/**
+ * @swagger
+ * /api/clientes/:
+ *   post:
+ *     tags:
+ *        - Clientes
+ *     description: Crear un cliente
+ *     operationId: crearCliente
+ *     summary: Crear un cliente por body
+ *     responses:
+ *       200:
+ *         description: Si el cliente fue creado exitosamente
+ *       500:
+ *         description: Error del servidor
+ *     parameters:
+ *        - in: body
+ *          name: Cliente
+ *          description: Modelo de cliente por crear
+ *          required: true
+ *          schema:
+ *            $ref: '#/components/schemas/Customer'
+ */
 customersRouter.post("/", validatePostCustomer, (req, res, next) => {
   const { nombre, apellidos, direccion, numeroMembresia } = req.newUser;
   const { db } = req.app.locals;
@@ -79,7 +147,34 @@ customersRouter.post("/", validatePostCustomer, (req, res, next) => {
     }
   );
 });
-
+/**
+ * @swagger
+ * /api/clientes/{id}:
+ *   patch:
+ *     summary: Actualiza un cliente
+ *     operationID: updateCliente
+ *     tags:
+ *        - Clientes
+ *     description: Actualiza un cliente
+ *     responses:
+ *       200:
+ *         description: Retorna el numero de queries afectadas (1) si el cliente fue modificado
+ *       500:
+ *         description: Error del servidor
+ *     parameters:
+ *        - name: id
+ *          in: path
+ *          required: true
+ *          description: ID del cliente
+ *          schema:
+ *            type: string
+ *        - in: body
+ *          name: Cliente
+ *          description: Modelo de cliente por actualizar
+ *          required: true
+ *          schema:
+ *            $ref: '#/components/schemas/Customer'
+ */
 customersRouter.patch("/:id", validatePatchCustomer, (req, res, next) => {
   const { nombre, apellidos, direccion } = req.newUser;
   const { id } = req.params;
@@ -100,7 +195,21 @@ customersRouter.patch("/:id", validatePatchCustomer, (req, res, next) => {
     }
   );
 });
-
+/**
+ * @swagger
+ * /api/clientes/{id}:
+ *   delete:
+ *     summary: Eliminar un cliente
+ *     operationID: deleteClienteById
+ *     tags:
+ *        - Clientes
+ *     description: Eliminar un cliente
+ *     responses:
+ *       200:
+ *         description: Retorna la informacion del cliente eliminado
+ *       500:
+ *         description: Error del servidor  
+ */
 customersRouter.delete("/:id", (req, res, next) => {
   const { id } = req.params;
   const { db } = req.app.locals;
