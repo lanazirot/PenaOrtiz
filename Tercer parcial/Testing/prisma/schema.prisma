@@ -1,0 +1,22 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Clientes {
+  id              Int     @id(map: "PK__Clientes__3213E83F6C6D92B5") @default(autoincrement())
+  nombre          String  @db.VarChar(255)
+  apellidos       String? @default("", map: "DF__Clientes__apelli__25869641") @db.VarChar(255)
+  direccion       String  @db.VarChar(255)
+  numeroMembresia String  @unique(map: "UQ__Clientes__77240E6D86E566C0") @db.VarChar(10)
+}
+
+model Productos {
+  id     Int    @id(map: "PK__Producto__3213E83F55EC3368") @default(autoincrement())
+  nombre String @db.VarChar(255)
+  precio Float  @db.Money
+}

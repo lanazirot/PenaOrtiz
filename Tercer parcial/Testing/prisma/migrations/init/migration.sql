@@ -1,0 +1,36 @@
+BEGIN TRY
+
+BEGIN TRAN;
+
+-- CreateTable
+CREATE TABLE [dbo].[Clientes] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [nombre] VARCHAR(255) NOT NULL,
+    [apellidos] VARCHAR(255) CONSTRAINT [DF__Clientes__apelli__25869641] DEFAULT '',
+    [direccion] VARCHAR(255) NOT NULL,
+    [numeroMembresia] VARCHAR(10) NOT NULL,
+    CONSTRAINT [PK__Clientes__3213E83F6C6D92B5] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [UQ__Clientes__77240E6D86E566C0] UNIQUE NONCLUSTERED ([numeroMembresia])
+);
+
+-- CreateTable
+CREATE TABLE [dbo].[Productos] (
+    [id] INT NOT NULL IDENTITY(1,1),
+    [nombre] VARCHAR(255) NOT NULL,
+    [precio] MONEY NOT NULL,
+    CONSTRAINT [PK__Producto__3213E83F55EC3368] PRIMARY KEY CLUSTERED ([id])
+);
+
+COMMIT TRAN;
+
+END TRY
+BEGIN CATCH
+
+IF @@TRANCOUNT > 0
+BEGIN
+    ROLLBACK TRAN;
+END;
+THROW
+
+END CATCH
+
