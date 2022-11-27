@@ -4,7 +4,10 @@ const estudiantesRouter = require("./estudiantes.route");
 const apiRoutes = require("../config/apiRoutes");
 
 
-
+/**
+ * Ruteador de la API
+ * @param {Express} app Aplicacion de express  
+ */
 const routerApi = app => {
   const router = express.Router();
   app.use('/api', router);

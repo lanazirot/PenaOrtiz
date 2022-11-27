@@ -1,5 +1,5 @@
 /**
- * 
+ * Validador de esquemas de la aplicacion utilizando Joi
  * @param {Schema} schema Esquema de validacion de Joi 
  * @param {*} property Propierdad a validar
  * @returns Al siguiente middleware si la validacion es exitosa, de lo contrario retorna un error
