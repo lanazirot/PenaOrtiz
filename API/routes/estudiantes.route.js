@@ -186,10 +186,10 @@ estudiantesRouter.patch("/:id", (req, res, next) => {
  *       500:
  *         description: Error del servidor
  */
-estudiantesRouter.delete("/:id", (req, res, next) => {
+estudiantesRouter.delete("/:id", async (req, res, next) => {
   //Delete an estudiante by id using prisma
   try {
-    const estudiante = prismaInstance.estudiantes.delete({
+    const estudiante = await prismaInstance.estudiantes.delete({
       where: {
         id_estudiante: Number(req.params.id),
       },

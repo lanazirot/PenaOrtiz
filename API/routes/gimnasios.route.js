@@ -110,10 +110,10 @@ gimnasiosRouter.get("/:id", (req, res, next) => {
       },
     })
     .then((gimnasio) => {
-      if(gimnasio){
+      if (gimnasio) {
         res.status(200).json(gimnasio);
-      }else{
-        res.status(404).json({message: "Gimnasio no encontrado"});
+      } else {
+        res.status(404).json({ message: "Gimnasio no encontrado" });
       }
     })
     .catch((error) => {
@@ -147,14 +147,12 @@ gimnasiosRouter.post("/", async (req, res, next) => {
   //Create gimnasio using prisma
   try {
     const gimnasio = await prismaInstance.gimnasios.create({
-      data: req.body
+      data: req.body,
     });
     res.status(200).json(gimnasio);
-  }
-  catch (error) {
+  } catch (error) {
     res.status(500).json(error);
   }
-
 });
 /**
  * @swagger
@@ -195,11 +193,9 @@ gimnasiosRouter.patch("/:id", async (req, res, next) => {
       data: req.body,
     });
     res.status(200).json(gimnasio);
-  }
-  catch (error) {
+  } catch (error) {
     res.status(500).json(error);
   }
-
 });
 /**
  * @swagger
@@ -229,8 +225,9 @@ gimnasiosRouter.delete("/:id", async (req, res, next) => {
   } catch (error) {
     if (error.code === "P2025") {
       res.status(404).json({ message: "Gimnasio no encontrado" });
+    }else{
+      res.status(500).json(error);
     }
-    res.status(500).json(error);
   }
 });
 
@@ -260,7 +257,7 @@ gimnasiosRouter.get("/:id/estudiantes", async (req, res, next) => {
         Estudiantes: true,
       },
     });
-    res.status(200).json(gimnasio.estudiantes);
+    res.status(200).json(gimnasio);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
