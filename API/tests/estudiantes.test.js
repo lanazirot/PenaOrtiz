@@ -19,7 +19,7 @@ describe("Estudiante Endpoints", () => {
 
   //Test /GET /api/estudiantes:id Debe devolver un error 404 si el estudiante no existe
   it("GET /api/estudiantes/:id Debe devolver un error 404 si el estudiante no existe", async () => {
-    const res = await request(app).get(`${apiTestEstudiante}/100`);
+    const res = await request(app).get(`${apiTestEstudiante}/10039`);
     expect(res.statusCode).toEqual(404);
   });
 
@@ -35,7 +35,6 @@ describe("Estudiante Endpoints", () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body).toHaveProperty("nombre");
     expect(res.body).toHaveProperty("peso");
-    expect(res.body).toHaveProperty("estatura");
     expect(res.body).toHaveProperty("direccion");
     expect(res.body).toHaveProperty("cinta");
     expect(res.body).toHaveProperty("id_gimnasio");
@@ -43,24 +42,41 @@ describe("Estudiante Endpoints", () => {
 
   //Test /PATCH /api/estudiantes/:id Debe actualizar un estudiante
   it("PATCH /api/estudiantes/:id Debe actualizar un estudiante", async () => {
-    const res = await request(app).patch(`${apiTestEstudiante}/1`).send({
-      nombre: "Estudiante de prueba",
-      direccion: "Calle de prueba",
+    //Obtener el ultimo ID del estudiante creado en la prueba anterior
+    const responseEstudiante = await request(app).get(apiTestEstudiante);
+    const lastId = responseEstudiante.body[responseEstudiante.body.length - 1].id_estudiante;
+    console.log(lastId);
+    expect(lastId).not.toBeUndefined();
+    const res = await request(app).patch(`${apiTestEstudiante}/${lastId}`).send({
+      nombre: "Estudiante de prueba actualizada",
+      direccion: "Calle de prueba actualizada",
       peso: 80.8,
       cinta: "Blanca",
-      id_gimnasio: 2,
+      id_gimnasio: 1,
     });
     expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty("nombre");
-    expect(res.body).toHaveProperty("direccion");
-    expect(res.body).toHaveProperty("peso");
-    expect(res.body).toHaveProperty("cinta");
-    expect(res.body).toHaveProperty("id_gimnasio");
-
-    //Comprobar que el gimnasio no tenga el estudiante en su lista de estudiantes
-    const res2 = await request(app).get(`/api/gimnasios/1/estudiantes`);
-    expect(res2.body.estudiantes).not.toContain(1);
-
-
+    expect(res.body.nombre).toEqual("Estudiante de prueba actualizada");
+    expect(res.body.direccion).toEqual("Calle de prueba actualizada");
   });
+
+  //Test /DELETE /api/estudiantes/:id Debe eliminar un estudiante
+  it("DELETE /api/estudiantes/:id Debe eliminar un estudiante", async () => {
+    //Obtener el ultimo ID del estudiante creado en la prueba anterior
+    const responseEstudiante = await request(app).get(apiTestEstudiante);
+    const lastId = responseEstudiante.body[responseEstudiante.body.length - 1].id_estudiante;
+
+    expect(lastId).not.toBeUndefined();
+    const res = await request(app).delete(`${apiTestEstudiante}/${lastId}`);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  //Test /DELETE /api/estudiantes/:id Debe devolver un error 404 si el estudiante no existe
+  it("DELETE /api/estudiantes/:id Debe devolver un error 404 si el estudiante no existe", async () => {
+    const res = await request(app).delete(`${apiTestEstudiante}/10093`);
+    expect(res.statusCode).toEqual(404);
+  });
+
+
+
+
 });

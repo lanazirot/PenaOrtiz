@@ -2,6 +2,12 @@ const express = require("express");
 const prismaInstance = require("../db/prisma");
 const estudiantesRouter = express.Router();
 
+const validatorSchema = require("../middlewares/validatorSchema");
+const {
+  estudianteSchema,
+  updateEstudianteSchema,
+} = require("../schemas/estudiantes");
+
 /**
  * @swagger
  * components:
@@ -83,16 +89,21 @@ estudiantesRouter.get("/", async (req, res, next) => {
  *        schema:
  *          type: string
  */
-estudiantesRouter.get("/:id", (req, res, next) => {
+estudiantesRouter.get("/:id", async (req, res, next) => {
   //Get an estudiante by id using prisma
   try {
-    const estudiante = prismaInstance.estudiantes.findUnique({
+    const estudiante = await prismaInstance.estudiantes.findUnique({
       where: {
         id_estudiante: Number(req.params.id),
       },
     });
-    res.status(200).json(estudiante);
+    if (estudiante) {
+      res.status(200).json(estudiante);
+    } else {
+      res.status(404).json({ error: "Estudiante no encontrado" });
+    }
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -101,7 +112,7 @@ estudiantesRouter.get("/:id", (req, res, next) => {
  * /api/estudiantes/:
  *   post:
  *     tags:
- *        - Productos
+ *        - Estudiantes
  *     description: Crear un estudiante
  *     operationId: crearEstudiante
  *     summary: Crear un estudiante por body
@@ -118,17 +129,21 @@ estudiantesRouter.get("/:id", (req, res, next) => {
  *          schema:
  *            $ref: '#/components/schemas/Estudiante'
  */
-estudiantesRouter.post("/", async (req, res, next) => {
-  //Create an estudiante using prisma
-  try {
-    const estudiante = await prismaInstance.estudiantes.create({
-      data: req.body,
-    });
-    res.status(200).json(estudiante);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+estudiantesRouter.post(
+  "/",
+  validatorSchema(estudianteSchema, "body"),
+  async (req, res, next) => {
+    //Create an estudiante using prisma
+    try {
+      const estudiante = await prismaInstance.estudiantes.create({
+        data: req.body,
+      });
+      res.status(200).json(estudiante);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
-});
+);
 /**
  * @swagger
  * /api/estudiantes/{id}:
@@ -141,6 +156,8 @@ estudiantesRouter.post("/", async (req, res, next) => {
  *     responses:
  *       200:
  *         description: Retorna la informacion del estudiante actualizado
+ *       404:
+ *         description: Estudiante no encontrado
  *       500:
  *         description: Error del servidor
  *     parameters:
@@ -157,20 +174,35 @@ estudiantesRouter.post("/", async (req, res, next) => {
  *          schema:
  *            $ref: '#/components/schemas/Estudiante'
  */
-estudiantesRouter.patch("/:id", (req, res, next) => {
-  //Update an estudiante by id using prisma
-  try {
-    const estudiante = prismaInstance.estudiantes.update({
-      where: {
-        id_estudiante: Number(req.params.id),
-      },
-      data: req.body,
-    });
-    res.status(200).json(estudiante);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+estudiantesRouter.patch(
+  "/:id",
+  validatorSchema(updateEstudianteSchema, "body"),
+  async (req, res, next) => {
+    //Update an estudiante by id using prisma
+    const { id } = req.params;
+    try {
+      //Check if estudiante exists before updating
+      const estudiante = await prismaInstance.estudiantes.findUnique({
+        where: {
+          id_estudiante: Number(id),
+        },
+      });
+      if (estudiante) {
+        const updatedEstudiante = await prismaInstance.estudiantes.update({
+          where: {
+            id_estudiante: Number(id),
+          },
+          data: req.body,
+        });
+        res.status(200).json(updatedEstudiante);
+      } else {
+        res.status(404).json({ error: "Estudiante no encontrado" });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
-});
+);
 /**
  * @swagger
  * /api/estudiantes/{id}:
@@ -183,6 +215,8 @@ estudiantesRouter.patch("/:id", (req, res, next) => {
  *     responses:
  *       200:
  *         description: Retorna la informacion del estudiante eliminado
+ *       404:
+ *         description: Estudiante no encontrado
  *       500:
  *         description: Error del servidor
  */
@@ -196,7 +230,11 @@ estudiantesRouter.delete("/:id", async (req, res, next) => {
     });
     res.status(200).json(estudiante);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    if (error.code === "P2025") {
+      res.status(404).json({ message: "Estudiante no encontrado" });
+    } else {
+      res.status(500).json(error);
+    }
   }
 });
 module.exports = estudiantesRouter;

@@ -1,5 +1,5 @@
 const request = require("supertest");
-const apiRoutes = require("../config/apiRoutes");Endpoints
+const apiRoutes = require("../config/apiRoutes");
 const app = require("../index");
 
 const apiTestGimnasio = `/api/${apiRoutes.gimnasios}`;
@@ -50,8 +50,8 @@ describe("Gimnasio Endpoints", () => {
     expect(res.statusCode).toEqual(500);
   });
 
-  //Test /PUT /api/gimnasios/:id Debe actualizar un gimnasio
-  it("PUT /api/gimnasios/:id Debe actualizar un gimnasio", async () => {
+  //Test /PATCH /api/gimnasios/:id Debe actualizar un gimnasio
+  it("PATCH /api/gimnasios/:id Debe actualizar un gimnasio", async () => {
     //Obtener el ultimo gimnasio creado
     const ultimoGimnasio = await request(app).get(`${apiTestGimnasio}`);
     const id = ultimoGimnasio.body[ultimoGimnasio.body.length - 1].id_gimnasio;
@@ -70,7 +70,6 @@ describe("Gimnasio Endpoints", () => {
       //Obtener el ultimo gimnasio creado
       const ultimoGimnasio = await request(app).get(`${apiTestGimnasio}`);
       const id = ultimoGimnasio.body[ultimoGimnasio.body.length - 1].id_gimnasio;
-      console.log(id);
       const res = await request(app).delete(`${apiTestGimnasio}/${id}`);
       expect(res.statusCode).toEqual(200);
     });

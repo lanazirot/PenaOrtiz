@@ -2,6 +2,12 @@ const express = require("express");
 const prismaInstance = require("../db/prisma");
 const gimnasiosRouter = express.Router();
 
+const validatorSchema = require("../middlewares/validatorSchema");
+const {
+  gimnasioSchema,
+  updateGimnasioSchema,
+} = require("../schemas/gimnasios");
+
 /**
  * @swagger
  * components:
@@ -100,26 +106,23 @@ gimnasiosRouter.get("/", async (req, res, next) => {
  *        schema:
  *          type: string
  */
-gimnasiosRouter.get("/:id", (req, res, next) => {
+gimnasiosRouter.get("/:id", async (req, res, next) => {
   //Get gimnasio by id using prisma
-  const { id } = req.params;
-  prismaInstance.gimnasios
-    .findUnique({
+  try {
+    const gimnasio = await prismaInstance.gimnasios.findUnique({
       where: {
-        id_gimnasio: parseInt(id),
+        id_gimnasio: Number(req.params.id),
       },
-    })
-    .then((gimnasio) => {
-      if (gimnasio) {
-        res.status(200).json(gimnasio);
-      } else {
-        res.status(404).json({ message: "Gimnasio no encontrado" });
-      }
-    })
-    .catch((error) => {
-      console.log();
-      res.status(500).json(error);
     });
+    if (gimnasio) {
+      res.status(200).json(gimnasio);
+    } else {
+      res.status(404).json({ error: "Gimnasio no encontrado" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json(error);
+  }
 });
 /**
  * @swagger
@@ -143,17 +146,21 @@ gimnasiosRouter.get("/:id", (req, res, next) => {
  *          schema:
  *            $ref: '#/components/schemas/Gimnasio'
  */
-gimnasiosRouter.post("/", async (req, res, next) => {
-  //Create gimnasio using prisma
-  try {
-    const gimnasio = await prismaInstance.gimnasios.create({
-      data: req.body,
-    });
-    res.status(200).json(gimnasio);
-  } catch (error) {
-    res.status(500).json(error);
+gimnasiosRouter.post(
+  "/",
+  validatorSchema(gimnasioSchema, "body"),
+  async (req, res, next) => {
+    //Create gimnasio using prisma
+    try {
+      const gimnasio = await prismaInstance.gimnasios.create({
+        data: req.body,
+      });
+      res.status(200).json(gimnasio);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   }
-});
+);
 /**
  * @swagger
  * /api/gimnasios/{id}:
@@ -166,6 +173,8 @@ gimnasiosRouter.post("/", async (req, res, next) => {
  *     responses:
  *       200:
  *         description: Retorna la informacion del gimnasio actualizado
+ *       404:
+ *         description: Gimnasio no encontrado
  *       500:
  *         description: Error del servidor
  *     parameters:
@@ -182,21 +191,35 @@ gimnasiosRouter.post("/", async (req, res, next) => {
  *          schema:
  *            $ref: '#/components/schemas/Gimnasio'
  */
-gimnasiosRouter.patch("/:id", async (req, res, next) => {
-  //Update gimnasio using prisma
-  const { id } = req.params;
-  try {
-    const gimnasio = await prismaInstance.gimnasios.update({
-      where: {
-        id_gimnasio: parseInt(id),
-      },
-      data: req.body,
-    });
-    res.status(200).json(gimnasio);
-  } catch (error) {
-    res.status(500).json(error);
+gimnasiosRouter.patch(
+  "/:id",
+  validatorSchema(updateGimnasioSchema, "body"),
+  async (req, res, next) => {
+    //Update gimnasio using prisma
+    const { id } = req.params;
+    try {
+      //Check if gimnasio exists before updating
+      const gimnasio = await prismaInstance.gimnasios.findUnique({
+        where: {
+          id_gimnasio: Number(id),
+        },
+      });
+      if (gimnasio) {
+        const updatedGimnasio = await prismaInstance.gimnasios.update({
+          where: {
+            id_gimnasio: Number(id),
+          },
+          data: req.body,
+        });
+        res.status(200).json(updatedGimnasio);
+      } else {
+        res.status(404).json({ error: "Gimnasio no encontrado" });
+      }
+    } catch (error) {
+      res.status(500).json(error);
+    }
   }
-});
+);
 /**
  * @swagger
  * /api/gimnasios/{id}:
@@ -209,6 +232,8 @@ gimnasiosRouter.patch("/:id", async (req, res, next) => {
  *     responses:
  *       200:
  *         description: Retorna la informacion del gimnasio eliminado
+ *       404:
+ *         description: Gimnasio no encontrado
  *       500:
  *         description: Error del servidor
  */
@@ -225,16 +250,15 @@ gimnasiosRouter.delete("/:id", async (req, res, next) => {
   } catch (error) {
     if (error.code === "P2025") {
       res.status(404).json({ message: "Gimnasio no encontrado" });
-    }else{
+    } else {
       res.status(500).json(error);
     }
   }
 });
-
 /**
  * @swagger
  * /api/gimnasios/{id}/estudiantes:
- *   delete:
+ *   get:
  *     summary: Retorna los estudiantes de un gimnasio
  *     operationID: getEstudiantesByGimnasio
  *     tags:
