@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Estudiantes {
+  id_estudiante Int        @id(map: "PK__Estudian__E0B2763CBC7C25DA") @default(autoincrement())
+  nombre        String     @db.VarChar(255)
+  direccion     String     @db.VarChar(255)
+  peso          Decimal    @db.Decimal(18, 0)
+  cinta         String     @db.VarChar(20)
+  id_gimnasio   Int?
+  Gimnasio     Gimnasios? @relation(fields: [id_gimnasio], references: [id_gimnasio], onDelete: NoAction, onUpdate: NoAction, map: "FK__Estudiant__id_gi__267ABA7A")
+}
+
+model Gimnasios {
+  id_gimnasio Int           @id(map: "PK__Gimnasio__94E00E85F4FE6798") @default(autoincrement())
+  nombre      String        @db.VarChar(255)
+  direccion   String        @db.VarChar(255)
+  Estudiantes Estudiantes[]
+}
