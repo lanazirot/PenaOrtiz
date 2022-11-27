@@ -88,7 +88,7 @@ estudiantesRouter.get("/:id", (req, res, next) => {
   try {
     const estudiante = prismaInstance.estudiantes.findUnique({
       where: {
-        id: Number(req.params.id),
+        id_estudiante: Number(req.params.id),
       },
     });
     res.status(200).json(estudiante);
@@ -118,10 +118,10 @@ estudiantesRouter.get("/:id", (req, res, next) => {
  *          schema:
  *            $ref: '#/components/schemas/Estudiante'
  */
-estudiantesRouter.post("/", (req, res, next) => {
+estudiantesRouter.post("/", async (req, res, next) => {
   //Create an estudiante using prisma
   try {
-    const estudiante = prismaInstance.estudiantes.create({
+    const estudiante = await prismaInstance.estudiantes.create({
       data: req.body,
     });
     res.status(200).json(estudiante);
@@ -162,7 +162,7 @@ estudiantesRouter.patch("/:id", (req, res, next) => {
   try {
     const estudiante = prismaInstance.estudiantes.update({
       where: {
-        id: Number(req.params.id),
+        id_estudiante: Number(req.params.id),
       },
       data: req.body,
     });
@@ -191,7 +191,7 @@ estudiantesRouter.delete("/:id", (req, res, next) => {
   try {
     const estudiante = prismaInstance.estudiantes.delete({
       where: {
-        id: Number(req.params.id),
+        id_estudiante: Number(req.params.id),
       },
     });
     res.status(200).json(estudiante);
@@ -199,5 +199,4 @@ estudiantesRouter.delete("/:id", (req, res, next) => {
     res.status(500).json({ error: error.message });
   }
 });
-
 module.exports = estudiantesRouter;
