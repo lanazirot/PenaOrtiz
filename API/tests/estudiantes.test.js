@@ -45,7 +45,6 @@ describe("Estudiante Endpoints", () => {
     //Obtener el ultimo ID del estudiante creado en la prueba anterior
     const responseEstudiante = await request(app).get(apiTestEstudiante);
     const lastId = responseEstudiante.body[responseEstudiante.body.length - 1].id_estudiante;
-    console.log(lastId);
     expect(lastId).not.toBeUndefined();
     const res = await request(app).patch(`${apiTestEstudiante}/${lastId}`).send({
       nombre: "Estudiante de prueba actualizada",

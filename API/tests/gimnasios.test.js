@@ -35,19 +35,19 @@ describe("Gimnasio Endpoints", () => {
   });
 
   //Test /POST /api/gimnasios Debe devolver un error 400 si el nombre no se envía
-  it("POST /api/gimnasios Debe devolver un error 500 si el nombre no se envía", async () => {
+  it("POST /api/gimnasios Debe devolver un error 422 si el nombre no se envía", async () => {
     const res = await request(app).post(`${apiTestGimnasio}`).send({
       direccion: "Calle de prueba",
     });
-    expect(res.statusCode).toEqual(500);
+    expect(res.statusCode).toEqual(422);
   });
 
   //Test /POST /api/gimnasios Debe devolver un error 400 si la dirección no se envía
-  it("POST /api/gimnasios Debe devolver un error 500 si la dirección no se envía", async () => {
+  it("POST /api/gimnasios Debe devolver un error 422 si la dirección no se envía", async () => {
     const res = await request(app).post(`${apiTestGimnasio}`).send({
       nombre: "Gimnasio de prueba",
     });
-    expect(res.statusCode).toEqual(500);
+    expect(res.statusCode).toEqual(422);
   });
 
   //Test /PATCH /api/gimnasios/:id Debe actualizar un gimnasio
