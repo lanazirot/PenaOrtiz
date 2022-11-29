@@ -3,5 +3,6 @@
  */
 module.exports = {
     gimnasios: '/gimnasios',
-    estudiantes: '/estudiantes'
+    estudiantes: '/estudiantes',
+    fotografias: '/fotografias'
 }

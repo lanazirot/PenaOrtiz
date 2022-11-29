@@ -28,6 +28,10 @@ const options = {
         name: "Gimnasios",
         description: "Relacionado con los gimnasios del sistema",
       },
+      {
+        name: "Fotografias",
+        description: "Relacionado con las fotografias del sistema",
+      }
     ],
   },
   apis: ["./routes/*.js"],

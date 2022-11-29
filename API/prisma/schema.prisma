@@ -14,7 +14,7 @@ model Estudiantes {
   peso          Decimal    @db.Decimal(18, 0)
   cinta         String     @db.VarChar(20)
   id_gimnasio   Int?
-  Gimnasio     Gimnasios? @relation(fields: [id_gimnasio], references: [id_gimnasio], onDelete: NoAction, onUpdate: NoAction, map: "FK__Estudiant__id_gi__267ABA7A")
+  Gimnasio      Gimnasios? @relation(fields: [id_gimnasio], references: [id_gimnasio], onDelete: NoAction, onUpdate: NoAction, map: "FK__Estudiant__id_gi__267ABA7A")
 }
 
 model Gimnasios {
@@ -22,4 +22,10 @@ model Gimnasios {
   nombre      String        @db.VarChar(255)
   direccion   String        @db.VarChar(255)
   Estudiantes Estudiantes[]
+}
+
+model Fotografias {
+  id         Int    @id(map: "PK__Fotograf__3213E83FDC1F08F3") @default(autoincrement())
+  url_path   String @db.VarChar(1000)
+  referencia String @db.VarChar(20)
 }
