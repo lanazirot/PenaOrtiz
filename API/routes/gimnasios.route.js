@@ -22,9 +22,6 @@ const {
  *         direccion:
  *           type: string
  *           description: Direccion del gimnasio
- *         photo_url:
- *           type: string
- *           description: URL de la foto del gimnasio
  *       required:
  *          - nombre
  *          - direccion
@@ -147,11 +144,6 @@ gimnasiosRouter.get("/:id", async (req, res, next) => {
  *          nombre: Gimnasio
  *          description: Modelo de gimnasio por crear
  *          required: true
- *        - in: formData
- *          name: photo_url
- *          type: file
- *          description: Foto del gimnasio
- *          required: false
  *          schema:
  *            $ref: '#/components/schemas/Gimnasio'
  */

@@ -53,6 +53,7 @@
   - [:toolbox: Preparación](#toolbox-preparación)
     - [:bangbang: Requisitos](#bangbang-requisitos)
     - [:test\_tube: Correr pruebas](#test_tube-correr-pruebas)
+    - [🖼️ Imágenes](#️-imágenes)
     - [:running: Montaje local](#running-montaje-local)
   - [:grey\_question: FAQ](#grey_question-faq)
   - [:warning: License](#warning-license)
@@ -118,6 +119,11 @@ Ejecuta el siguiente comando
 ```bash
   npm run test
 ```
+
+### 🖼️ Imágenes
+
+Por favor, crea la carpeta /uploads, dentro de la carpeta API
+
 
 <!-- Run Locally -->
 ### :running: Montaje local
