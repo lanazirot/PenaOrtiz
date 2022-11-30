@@ -65,7 +65,7 @@ const upload = multer({ storage: storage });
  *          type: file
  */
 fotografiasRouter.post("/", upload.single('image') , async (req, res, next) => {
-  const {referencia = 'default'} = req.params;
+  const {referencia = 'default'} = req.query;
   try {
     const {secure_url} = await cloudinary.uploader.upload(req.file.path);
     const newFotografia = await prismaInstance.fotografias.create({
