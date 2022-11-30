@@ -15,9 +15,8 @@ const routerApi = app => {
   router.use(apiRoutes.estudiantes, estudiantesRouter);
   router.use(apiRoutes.gimnasios, gimnasiosRouter);
   router.use(apiRoutes.fotografias, fotografiasRouter);
-  router.use((req, res, next) => {
-    // Return error 404 JSON if route not found
-    res.status(404).json({ message: 'Ruta no encontrada' });
+  app.use('*', (req, res) => {
+    res.status(404).send({ message: 'Not found' });
   });
-}
+} 
 module.exports = routerApi;
