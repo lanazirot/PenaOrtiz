@@ -1,7 +1,25 @@
 const express = require("express");
 const prismaInstance = require("../db/prisma");
 const fotografiasRouter = express.Router();
-const path = require("path");
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const multer = require("multer");
+
+cloudinary.config({
+  secure: true,
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "uploads",
+  },
+});
+
+const upload = multer({ storage: storage });
 
 /**
  * @swagger
@@ -46,25 +64,19 @@ const path = require("path");
  *          name: image
  *          type: file
  */
-fotografiasRouter.post("/", async (req, res, next) => {
-  const { image } = req.files;
-  const { referencia = "default" } = req.query;
-  if (!image) {
-    return res.status(400).json({
-      message: "No se ha seleccionado ninguna imagen",
-    });
-  }
+fotografiasRouter.post("/", upload.single('image') , async (req, res, next) => {
+  const {referencia = 'default'} = req.params;
   try {
-    const ruta = path.join(__dirname, "..", "uploads", image.name + new Date().getTime() + ".jpg");
+    const {secure_url} = await cloudinary.uploader.upload(req.file.path);
     const newFotografia = await prismaInstance.fotografias.create({
         data: {
             referencia,
-            url_path: ruta,
+            url_path: secure_url
         },
     });
-    image.mv(ruta);
     res.status(201).json(newFotografia);
   } catch (error) {
+    console.log(error);
     next(error);
   }
 });
@@ -123,7 +135,7 @@ fotografiasRouter.get("/:id", async (req, res, next) => {
       },
     });
     if (fotografia) {
-      res.status(200).sendFile(fotografia.url_path);
+      res.status(200).redirect(fotografia.url_path);
     } else {
       res.status(404).json({
         error: "Fotografia no encontrada",
