@@ -6,7 +6,8 @@
   "scripts": {
     "test": "set NODE_ENV=test&& jest",
     "test:watch": "set NODE_ENV=test&& jest --watch",
-    "docs": "jsdoc -c jsdoc.json"
+    "docs": "jsdoc -c jsdoc.json",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
